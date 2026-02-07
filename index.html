@@ -1,0 +1,1324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Md Injamamul Hoque - Android Developer</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: #0d0d0d;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        /* Animated Background */
+        .bg-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: radial-gradient(ellipse at top, #1a1a2e 0%, #0d0d0d 100%);
+        }
+
+        .bg-container::before {
+            content: '';
+            position: absolute;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(61, 220, 132, 0.15) 0%, transparent 70%);
+            top: -100px;
+            right: -100px;
+            animation: float 20s infinite alternate;
+        }
+
+        .bg-container::after {
+            content: '';
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(0, 217, 255, 0.1) 0%, transparent 70%);
+            bottom: -100px;
+            left: -100px;
+            animation: float 15s infinite alternate-reverse;
+        }
+
+        @keyframes float {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(100px, 100px) scale(1.2); }
+        }
+
+        /* Phone Container */
+        .phone-container {
+            position: relative;
+            width: 380px;
+            height: 780px;
+            background: linear-gradient(145deg, #1a1a1a, #2a2a2a);
+            border-radius: 50px;
+            box-shadow: 
+                0 50px 100px rgba(0, 0, 0, 0.8),
+                inset 0 0 0 2px rgba(255, 255, 255, 0.05),
+                0 0 0 1px rgba(0, 0, 0, 0.5);
+            padding: 15px;
+            animation: phoneEntrance 1s cubic-bezier(0.34, 1.56, 0.64, 1);
+            transform-style: preserve-3d;
+            perspective: 1000px;
+        }
+
+        @keyframes phoneEntrance {
+            0% {
+                opacity: 0;
+                transform: translateY(100px) rotateX(-20deg);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) rotateX(0);
+            }
+        }
+
+        /* Screen */
+        .phone-screen {
+            width: 100%;
+            height: 100%;
+            background: #000;
+            border-radius: 38px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Notch */
+        .notch {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 140px;
+            height: 30px;
+            background: #000;
+            border-radius: 0 0 20px 20px;
+            z-index: 1000;
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .notch::before {
+            content: '';
+            position: absolute;
+            top: 8px;
+            left: 20px;
+            width: 8px;
+            height: 8px;
+            background: #1a1a2e;
+            border-radius: 50%;
+        }
+
+        .notch::after {
+            content: '';
+            position: absolute;
+            top: 11px;
+            right: 20px;
+            width: 50px;
+            height: 4px;
+            background: #1a1a2e;
+            border-radius: 2px;
+        }
+
+        /* Status Bar */
+        .status-bar {
+            height: 40px;
+            background: linear-gradient(180deg, #1a1a2e 0%, transparent 100%);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            font-size: 11px;
+            color: #fff;
+            font-weight: 600;
+            position: relative;
+            z-index: 100;
+        }
+
+        .time { 
+            font-family: 'JetBrains Mono', monospace;
+            letter-spacing: 0.5px;
+        }
+
+        .status-icons {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .status-icons span {
+            font-size: 14px;
+        }
+
+        /* Main Content */
+        .content-wrapper {
+            height: calc(100% - 40px);
+            overflow-y: auto;
+            overflow-x: hidden;
+            position: relative;
+            scroll-behavior: smooth;
+        }
+
+        .content-wrapper::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .content-wrapper::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .content-wrapper::-webkit-scrollbar-thumb {
+            background: rgba(61, 220, 132, 0.5);
+            border-radius: 10px;
+        }
+
+        /* Home Screen */
+        .home-screen {
+            min-height: 100%;
+            background: linear-gradient(180deg, #0a0e27 0%, #16213e 100%);
+            padding: 20px;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Profile Widget */
+        .profile-widget {
+            background: linear-gradient(145deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02));
+            backdrop-filter: blur(20px);
+            border-radius: 30px;
+            padding: 30px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            animation: slideUp 0.6s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .profile-widget::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(61, 220, 132, 0.1) 0%, transparent 50%);
+            animation: rotate 20s linear infinite;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .avatar {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(145deg, #3DDC84, #00D9FF);
+            border-radius: 50%;
+            margin: 0 auto 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            font-weight: 900;
+            color: #000;
+            box-shadow: 0 10px 30px rgba(61, 220, 132, 0.4);
+            position: relative;
+            z-index: 1;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 10px 30px rgba(61, 220, 132, 0.4); }
+            50% { box-shadow: 0 10px 50px rgba(61, 220, 132, 0.8); }
+        }
+
+        .profile-widget h1 {
+            font-size: 24px;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 5px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .profile-widget .title {
+            font-size: 14px;
+            color: #3DDC84;
+            font-weight: 600;
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .profile-widget .exp {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.6);
+            position: relative;
+            z-index: 1;
+        }
+
+        /* App Grid */
+        .app-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+            animation: slideUp 0.8s ease;
+            animation-delay: 0.2s;
+            opacity: 0;
+            animation-fill-mode: forwards;
+        }
+
+        .app-icon {
+            aspect-ratio: 1;
+            background: linear-gradient(145deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
+            backdrop-filter: blur(10px);
+            border-radius: 25px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .app-icon::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(145deg, rgba(61, 220, 132, 0.2), rgba(0, 217, 255, 0.2));
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .app-icon:hover::before {
+            opacity: 1;
+        }
+
+        .app-icon:active {
+            transform: scale(0.95);
+        }
+
+        .app-icon:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(61, 220, 132, 0.3);
+            border-color: rgba(61, 220, 132, 0.5);
+        }
+
+        .app-icon-img {
+            font-size: 40px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .app-name {
+            font-size: 11px;
+            font-weight: 600;
+            color: #fff;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Download Button */
+        .download-btn {
+            background: linear-gradient(145deg, #3DDC84, #2bc56e);
+            color: #000;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+            margin-top: 20px;
+            transition: all 0.3s;
+            box-shadow: 0 10px 30px rgba(61, 220, 132, 0.4);
+            position: relative;
+            z-index: 1;
+        }
+
+        .download-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(61, 220, 132, 0.6);
+        }
+
+        .download-btn:active {
+            transform: translateY(-1px);
+        }
+
+        /* Modal Screens */
+        .modal-screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(180deg, #0a0e27 0%, #16213e 100%);
+            transform: translateY(100%);
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            z-index: 200;
+            overflow-y: auto;
+        }
+
+        .modal-screen.active {
+            transform: translateY(0);
+        }
+
+        .modal-header {
+            display: flex;
+            align-items: center;
+            padding: 20px;
+            background: linear-gradient(180deg, rgba(255,255,255,0.05) 0%, transparent 100%);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            backdrop-filter: blur(20px);
+        }
+
+        .back-btn {
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            border-radius: 12px;
+            color: #fff;
+            font-size: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateX(-5px);
+        }
+
+        .modal-title {
+            flex: 1;
+            text-align: center;
+            font-size: 18px;
+            font-weight: 700;
+            color: #fff;
+            margin-right: 40px;
+        }
+
+        .modal-content {
+            padding: 20px;
+        }
+
+        /* Skills Screen */
+        .skill-item {
+            background: linear-gradient(145deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02));
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 15px;
+            animation: slideInRight 0.5s ease;
+            animation-fill-mode: both;
+        }
+
+        .skill-item:nth-child(1) { animation-delay: 0.1s; }
+        .skill-item:nth-child(2) { animation-delay: 0.2s; }
+        .skill-item:nth-child(3) { animation-delay: 0.3s; }
+        .skill-item:nth-child(4) { animation-delay: 0.4s; }
+        .skill-item:nth-child(5) { animation-delay: 0.5s; }
+        .skill-item:nth-child(6) { animation-delay: 0.6s; }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .skill-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 10px;
+        }
+
+        .skill-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(145deg, #3DDC84, #00D9FF);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .skill-info h3 {
+            font-size: 16px;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 3px;
+        }
+
+        .skill-level {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .skill-bar {
+            width: 100%;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .skill-progress {
+            height: 100%;
+            background: linear-gradient(90deg, #3DDC84, #00D9FF);
+            border-radius: 10px;
+            animation: fillBar 1s ease forwards;
+            animation-delay: 0.5s;
+            width: 0;
+        }
+
+        @keyframes fillBar {
+            to { width: var(--progress); }
+        }
+
+        /* Projects Screen */
+        .project-card {
+            background: linear-gradient(145deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02));
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 25px;
+            padding: 25px;
+            margin-bottom: 20px;
+            animation: slideInRight 0.5s ease;
+            animation-fill-mode: both;
+        }
+
+        .project-card:nth-child(1) { animation-delay: 0.1s; }
+        .project-card:nth-child(2) { animation-delay: 0.2s; }
+        .project-card:nth-child(3) { animation-delay: 0.3s; }
+
+        .project-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(145deg, #3DDC84, #00D9FF);
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            margin-bottom: 15px;
+            box-shadow: 0 10px 30px rgba(61, 220, 132, 0.3);
+        }
+
+        .project-card h3 {
+            font-size: 18px;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 10px;
+        }
+
+        .project-card p {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.7);
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .tech-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .tech-tag {
+            background: rgba(61, 220, 132, 0.2);
+            color: #3DDC84;
+            padding: 5px 12px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+            border: 1px solid rgba(61, 220, 132, 0.3);
+        }
+
+        /* Experience Screen */
+        .timeline {
+            position: relative;
+            padding-left: 30px;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 10px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: linear-gradient(180deg, #3DDC84, #00D9FF);
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 30px;
+            animation: slideInRight 0.5s ease;
+            animation-fill-mode: both;
+        }
+
+        .timeline-item:nth-child(1) { animation-delay: 0.1s; }
+        .timeline-item:nth-child(2) { animation-delay: 0.2s; }
+        .timeline-item:nth-child(3) { animation-delay: 0.3s; }
+        .timeline-item:nth-child(4) { animation-delay: 0.4s; }
+
+        .timeline-dot {
+            position: absolute;
+            left: -24px;
+            top: 0;
+            width: 12px;
+            height: 12px;
+            background: #3DDC84;
+            border-radius: 50%;
+            box-shadow: 0 0 20px rgba(61, 220, 132, 0.8);
+        }
+
+        .timeline-content {
+            background: linear-gradient(145deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02));
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 20px;
+        }
+
+        .timeline-content h3 {
+            font-size: 16px;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 5px;
+        }
+
+        .timeline-content .duration {
+            font-size: 12px;
+            color: #3DDC84;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .timeline-content p {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.7);
+            line-height: 1.6;
+        }
+
+        /* Contact Screen */
+        .contact-card {
+            background: linear-gradient(145deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02));
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            animation: slideInRight 0.5s ease;
+            animation-fill-mode: both;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .contact-card:nth-child(1) { animation-delay: 0.1s; }
+        .contact-card:nth-child(2) { animation-delay: 0.2s; }
+        .contact-card:nth-child(3) { animation-delay: 0.3s; }
+        .contact-card:nth-child(4) { animation-delay: 0.4s; }
+
+        .contact-card:hover {
+            transform: translateX(10px);
+            border-color: rgba(61, 220, 132, 0.5);
+            box-shadow: 0 10px 30px rgba(61, 220, 132, 0.2);
+        }
+
+        .contact-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(145deg, #3DDC84, #00D9FF);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        .contact-info-text h3 {
+            font-size: 14px;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 3px;
+        }
+
+        .contact-info-text p {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        /* About Screen */
+        .about-section {
+            margin-bottom: 30px;
+            animation: slideInRight 0.5s ease;
+            animation-fill-mode: both;
+        }
+
+        .about-section:nth-child(1) { animation-delay: 0.1s; }
+        .about-section:nth-child(2) { animation-delay: 0.2s; }
+
+        .about-section h3 {
+            font-size: 18px;
+            font-weight: 700;
+            color: #3DDC84;
+            margin-bottom: 15px;
+        }
+
+        .about-section p {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.8;
+            margin-bottom: 10px;
+        }
+
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .stat-card {
+            background: linear-gradient(145deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02));
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 32px;
+            font-weight: 900;
+            color: #3DDC84;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.6);
+            font-weight: 600;
+        }
+
+        /* Responsive */
+        @media (max-width: 420px) {
+            .phone-container {
+                width: 100%;
+                height: 100vh;
+                border-radius: 0;
+            }
+            .phone-screen {
+                border-radius: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-container"></div>
+
+    <div class="phone-container">
+        <div class="phone-screen">
+            <div class="notch"></div>
+
+            <!-- Status Bar -->
+            <div class="status-bar">
+                <span class="time" id="currentTime">12:30</span>
+                <div class="status-icons">
+                    <span>📶</span>
+                    <span>📡</span>
+                    <span>🔋</span>
+                </div>
+            </div>
+
+            <div class="content-wrapper">
+                <!-- Home Screen -->
+                <div class="home-screen" id="homeScreen">
+                    <!-- Profile Widget -->
+                    <div class="profile-widget">
+                        <div class="avatar">MIH</div>
+                        <h1>Md Injamamul Hoque</h1>
+                        <div class="title">Senior Android Developer</div>
+                        <div class="exp">8+ Years Experience</div>
+                    </div>
+
+                    <!-- App Grid -->
+                    <div class="app-grid">
+                        <div class="app-icon" onclick="openModal('skillsModal')">
+                            <div class="app-icon-img">💻</div>
+                            <div class="app-name">Skills</div>
+                        </div>
+                        <div class="app-icon" onclick="openModal('projectsModal')">
+                            <div class="app-icon-img">🚀</div>
+                            <div class="app-name">Projects</div>
+                        </div>
+                        <div class="app-icon" onclick="openModal('experienceModal')">
+                            <div class="app-icon-img">💼</div>
+                            <div class="app-name">Experience</div>
+                        </div>
+                        <div class="app-icon" onclick="openModal('aboutModal')">
+                            <div class="app-icon-img">👤</div>
+                            <div class="app-name">About</div>
+                        </div>
+                        <div class="app-icon" onclick="openModal('contactModal')">
+                            <div class="app-icon-img">📞</div>
+                            <div class="app-name">Contact</div>
+                        </div>
+                        <div class="app-icon" onclick="openModal('certificatesModal')">
+                            <div class="app-icon-img">🏆</div>
+                            <div class="app-name">Certs</div>
+                        </div>
+                    </div>
+
+                    <!-- Download Button -->
+                    <button class="download-btn" onclick="downloadResume()">
+                        <span>📥</span>
+                        <span>Download Resume</span>
+                    </button>
+                </div>
+
+                <!-- Skills Modal -->
+                <div class="modal-screen" id="skillsModal">
+                    <div class="modal-header">
+                        <button class="back-btn" onclick="closeModal('skillsModal')">←</button>
+                        <div class="modal-title">Technical Skills</div>
+                    </div>
+                    <div class="modal-content">
+                        <div class="skill-item">
+                            <div class="skill-header">
+                                <div class="skill-icon">☕</div>
+                                <div class="skill-info">
+                                    <h3>Java</h3>
+                                    <div class="skill-level">Expert • 8 years</div>
+                                </div>
+                            </div>
+                            <div class="skill-bar">
+                                <div class="skill-progress" style="--progress: 95%"></div>
+                            </div>
+                        </div>
+
+                        <div class="skill-item">
+                            <div class="skill-header">
+                                <div class="skill-icon">🎯</div>
+                                <div class="skill-info">
+                                    <h3>Kotlin</h3>
+                                    <div class="skill-level">Expert • 6 years</div>
+                                </div>
+                            </div>
+                            <div class="skill-bar">
+                                <div class="skill-progress" style="--progress: 90%"></div>
+                            </div>
+                        </div>
+
+                        <div class="skill-item">
+                            <div class="skill-header">
+                                <div class="skill-icon">🌿</div>
+                                <div class="skill-info">
+                                    <h3>Spring Boot</h3>
+                                    <div class="skill-level">Advanced • 5 years</div>
+                                </div>
+                            </div>
+                            <div class="skill-bar">
+                                <div class="skill-progress" style="--progress: 85%"></div>
+                            </div>
+                        </div>
+
+                        <div class="skill-item">
+                            <div class="skill-header">
+                                <div class="skill-icon">⚛️</div>
+                                <div class="skill-info">
+                                    <h3>React Native</h3>
+                                    <div class="skill-level">Advanced • 4 years</div>
+                                </div>
+                            </div>
+                            <div class="skill-bar">
+                                <div class="skill-progress" style="--progress: 82%"></div>
+                            </div>
+                        </div>
+
+                        <div class="skill-item">
+                            <div class="skill-header">
+                                <div class="skill-icon">💳</div>
+                                <div class="skill-info">
+                                    <h3>FinTech (UPI/AEPS/Payout)</h3>
+                                    <div class="skill-level">Expert • 5 years</div>
+                                </div>
+                            </div>
+                            <div class="skill-bar">
+                                <div class="skill-progress" style="--progress: 93%"></div>
+                            </div>
+                        </div>
+
+                        <div class="skill-item">
+                            <div class="skill-header">
+                                <div class="skill-icon">🔌</div>
+                                <div class="skill-info">
+                                    <h3>Device Integration (Micro ATM)</h3>
+                                    <div class="skill-level">Expert • 4 years</div>
+                                </div>
+                            </div>
+                            <div class="skill-bar">
+                                <div class="skill-progress" style="--progress: 88%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Projects Modal -->
+                <div class="modal-screen" id="projectsModal">
+                    <div class="modal-header">
+                        <button class="back-btn" onclick="closeModal('projectsModal')">←</button>
+                        <div class="modal-title">Featured Projects</div>
+                    </div>
+                    <div class="modal-content">
+                        <div class="project-card">
+                            <div class="project-icon">💰</div>
+                            <h3>PayFast - Money Transfer</h3>
+                            <p>Comprehensive FinTech platform with UPI, AEPS, money transfer, and wallet integration. Handles 50K+ daily transactions with 99.9% uptime.</p>
+                            <div class="tech-tags">
+                                <span class="tech-tag">Kotlin</span>
+                                <span class="tech-tag">MVVM</span>
+                                <span class="tech-tag">UPI SDK</span>
+                                <span class="tech-tag">Room DB</span>
+                            </div>
+                        </div>
+
+                        <div class="project-card">
+                            <div class="project-icon">🏦</div>
+                            <h3>MicroATM Suite</h3>
+                            <p>Seamless integration with micro ATM devices for cash withdrawal, balance inquiry, and mini statements with biometric authentication.</p>
+                            <div class="tech-tags">
+                                <span class="tech-tag">Java</span>
+                                <span class="tech-tag">AEPS</span>
+                                <span class="tech-tag">Device SDK</span>
+                                <span class="tech-tag">Security</span>
+                            </div>
+                        </div>
+
+                        <div class="project-card">
+                            <div class="project-icon">👶</div>
+                            <h3>KidsCare Management</h3>
+                            <p>Complete daycare solution with parent-teacher communication, attendance tracking, and activity management. Used by 100+ daycares.</p>
+                            <div class="tech-tags">
+                                <span class="tech-tag">React Native</span>
+                                <span class="tech-tag">Firebase</span>
+                                <span class="tech-tag">Notifications</span>
+                            </div>
+                        </div>
+
+                        <div class="project-card">
+                            <div class="project-icon">📈</div>
+                            <h3>TradeSignals Pro</h3>
+                            <p>Real-time stock market analysis with technical indicators, alerts, and portfolio tracking. 10K+ active traders.</p>
+                            <div class="tech-tags">
+                                <span class="tech-tag">Kotlin</span>
+                                <span class="tech-tag">Charts</span>
+                                <span class="tech-tag">WebSocket</span>
+                            </div>
+                        </div>
+
+                        <div class="project-card">
+                            <div class="project-icon">⚽</div>
+                            <h3>CoachPro - Drill Analyzer</h3>
+                            <p>Sports training app with video analysis, motion tracking, and performance metrics for professional athletes and coaches.</p>
+                            <div class="tech-tags">
+                                <span class="tech-tag">Kotlin</span>
+                                <span class="tech-tag">ML Vision</span>
+                                <span class="tech-tag">CameraX</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Experience Modal -->
+                <div class="modal-screen" id="experienceModal">
+                    <div class="modal-header">
+                        <button class="back-btn" onclick="closeModal('experienceModal')">←</button>
+                        <div class="modal-title">Work Experience</div>
+                    </div>
+                    <div class="modal-content">
+                        <div class="timeline">
+                            <div class="timeline-item">
+                                <div class="timeline-dot"></div>
+                                <div class="timeline-content">
+                                    <h3>FinTech Solutions Lead</h3>
+                                    <div class="duration">2019 - Present • 5+ years</div>
+                                    <p>Leading development of payment solutions including UPI, AEPS, money transfer, and payout systems. Integrated micro ATM devices and implemented PCI-DSS security.</p>
+                                </div>
+                            </div>
+
+                            <div class="timeline-item">
+                                <div class="timeline-dot"></div>
+                                <div class="timeline-content">
+                                    <h3>Senior Android Developer</h3>
+                                    <div class="duration">2021 - 2022 • 1+ year</div>
+                                    <p>Developed daycare management system with real-time features, parent-teacher portal, and attendance tracking. Scaled to 100+ institutions.</p>
+                                </div>
+                            </div>
+
+                            <div class="timeline-item">
+                                <div class="timeline-dot"></div>
+                                <div class="timeline-content">
+                                    <h3>Mobile App Developer</h3>
+                                    <div class="duration">2020 - 2021 • 1+ year</div>
+                                    <p>Built stock market indicators app with real-time data, advanced charting, and technical analysis tools for traders.</p>
+                                </div>
+                            </div>
+
+                            <div class="timeline-item">
+                                <div class="timeline-dot"></div>
+                                <div class="timeline-content">
+                                    <h3>Android Developer</h3>
+                                    <div class="duration">2017 - 2020 • 3 years</div>
+                                    <p>Created sports drill analysis app with video recording, motion tracking, and performance analytics for professional coaches.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- About Modal -->
+                <div class="modal-screen" id="aboutModal">
+                    <div class="modal-header">
+                        <button class="back-btn" onclick="closeModal('aboutModal')">←</button>
+                        <div class="modal-title">About Me</div>
+                    </div>
+                    <div class="modal-content">
+                        <div class="about-section">
+                            <h3>👨‍💻 Professional Summary</h3>
+                            <p>Senior Android Developer with 8+ years of experience building robust, scalable mobile applications across multiple domains. Specialized in FinTech solutions with deep expertise in payment systems, device integrations, and secure financial transactions.</p>
+                            <p>Proven track record of delivering high-quality applications that serve thousands of users daily, with particular strength in real-time systems, complex integrations, and performance optimization.</p>
+                        </div>
+
+                        <div class="about-section">
+                            <h3>🎯 Specializations</h3>
+                            <p>• FinTech Applications (UPI, AEPS, Money Transfer, Payouts)</p>
+                            <p>• Payment Gateway Integrations</p>
+                            <p>• Device SDK Integration (Micro ATM, AOI Devices)</p>
+                            <p>• Cross-Platform Development (React Native)</p>
+                            <p>• Backend Development (Spring Boot)</p>
+                            <p>• Real-time Systems & Performance Optimization</p>
+                        </div>
+
+                        <div class="stat-grid">
+                            <div class="stat-card">
+                                <div class="stat-number">8+</div>
+                                <div class="stat-label">Years Experience</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-number">50+</div>
+                                <div class="stat-label">Projects Delivered</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-number">100K+</div>
+                                <div class="stat-label">Active Users</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-number">99.9%</div>
+                                <div class="stat-label">Uptime Rate</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Contact Modal -->
+                <div class="modal-screen" id="contactModal">
+                    <div class="modal-header">
+                        <button class="back-btn" onclick="closeModal('contactModal')">←</button>
+                        <div class="modal-title">Get In Touch</div>
+                    </div>
+                    <div class="modal-content">
+                        <a href="mailto:md.injamamul@example.com" class="contact-card">
+                            <div class="contact-icon">📧</div>
+                            <div class="contact-info-text">
+                                <h3>Email</h3>
+                                <p>md.injamamul@example.com</p>
+                            </div>
+                        </a>
+
+                        <a href="tel:+919876543210" class="contact-card">
+                            <div class="contact-icon">📱</div>
+                            <div class="contact-info-text">
+                                <h3>Phone</h3>
+                                <p>+91 98765 43210</p>
+                            </div>
+                        </a>
+
+                        <a href="https://linkedin.com" target="_blank" class="contact-card">
+                            <div class="contact-icon">💼</div>
+                            <div class="contact-info-text">
+                                <h3>LinkedIn</h3>
+                                <p>Connect with me</p>
+                            </div>
+                        </a>
+
+                        <a href="https://github.com" target="_blank" class="contact-card">
+                            <div class="contact-icon">🐙</div>
+                            <div class="contact-info-text">
+                                <h3>GitHub</h3>
+                                <p>View my code</p>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Certificates Modal -->
+                <div class="modal-screen" id="certificatesModal">
+                    <div class="modal-header">
+                        <button class="back-btn" onclick="closeModal('certificatesModal')">←</button>
+                        <div class="modal-title">Certifications</div>
+                    </div>
+                    <div class="modal-content">
+                        <div class="timeline">
+                            <div class="timeline-item">
+                                <div class="timeline-dot"></div>
+                                <div class="timeline-content">
+                                    <h3>Google Associate Android Developer</h3>
+                                    <div class="duration">Google • 2021</div>
+                                    <p>Certified in Android app development best practices and architecture patterns.</p>
+                                </div>
+                            </div>
+
+                            <div class="timeline-item">
+                                <div class="timeline-dot"></div>
+                                <div class="timeline-content">
+                                    <h3>Kotlin for Android Developers</h3>
+                                    <div class="duration">JetBrains • 2020</div>
+                                    <p>Advanced Kotlin programming and modern Android development techniques.</p>
+                                </div>
+                            </div>
+
+                            <div class="timeline-item">
+                                <div class="timeline-dot"></div>
+                                <div class="timeline-content">
+                                    <h3>AWS Certified Developer</h3>
+                                    <div class="duration">Amazon Web Services • 2022</div>
+                                    <p>Cloud infrastructure and serverless application development.</p>
+                                </div>
+                            </div>
+
+                            <div class="timeline-item">
+                                <div class="timeline-dot"></div>
+                                <div class="timeline-content">
+                                    <h3>React Native Specialization</h3>
+                                    <div class="duration">Meta • 2021</div>
+                                    <p>Cross-platform mobile development with React Native framework.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Update time
+        function updateTime() {
+            const now = new Date();
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            document.getElementById('currentTime').textContent = `${hours}:${minutes}`;
+        }
+        updateTime();
+        setInterval(updateTime, 60000);
+
+        // Modal functions
+        function openModal(modalId) {
+            document.getElementById(modalId).classList.add('active');
+            // Trigger animations
+            setTimeout(() => {
+                document.getElementById(modalId).querySelectorAll('.skill-item, .project-card, .timeline-item, .contact-card, .about-section').forEach((el, index) => {
+                    el.style.animationDelay = `${index * 0.1}s`;
+                });
+            }, 100);
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+
+        // Download Resume Function
+        function downloadResume() {
+            // Create resume content
+            const resumeContent = `
+MD INJAMAMUL HOQUE
+Senior Android Developer
+8+ Years Experience
+
+CONTACT
+Email: md.injamamul@example.com
+Phone: +91 98765 43210
+Location: Available for Remote & On-site
+
+PROFESSIONAL SUMMARY
+Senior Android Developer with 8+ years of experience building robust, scalable mobile applications across multiple domains. Specialized in FinTech solutions with deep expertise in payment systems, device integrations, and secure financial transactions.
+
+TECHNICAL SKILLS
+• Java - Expert (8 years)
+• Kotlin - Expert (6 years)
+• Spring Boot - Advanced (5 years)
+• React Native - Advanced (4 years)
+• FinTech (UPI/AEPS/Payout) - Expert (5 years)
+• Device Integration (Micro ATM) - Expert (4 years)
+
+WORK EXPERIENCE
+
+FinTech Solutions Lead | 2019 - Present
+• Leading development of payment solutions including UPI, AEPS, money transfer, and payout systems
+• Integrated micro ATM devices with biometric authentication
+• Implemented PCI-DSS compliant security measures
+• Handled 50K+ daily transactions with 99.9% uptime
+
+Senior Android Developer | 2021 - 2022
+• Developed daycare management system with real-time features
+• Built parent-teacher communication portal
+• Implemented attendance tracking and activity management
+• Scaled to 100+ institutions
+
+Mobile App Developer | 2020 - 2021
+• Built stock market indicators app with real-time data
+• Implemented advanced charting and technical analysis tools
+• Integrated WebSocket for high-frequency updates
+• Served 10K+ active traders
+
+Android Developer | 2017 - 2020
+• Created sports drill analysis app with video recording
+• Implemented motion tracking and performance analytics
+• Built drill management system for coaches
+• Used by professional sports teams
+
+FEATURED PROJECTS
+
+PayFast - Money Transfer Platform
+Comprehensive FinTech solution with UPI, AEPS, money transfer, and wallet integration.
+Tech: Kotlin, MVVM, UPI SDK, Room DB
+
+MicroATM Integration Suite
+Seamless integration with micro ATM devices for financial transactions.
+Tech: Java, AEPS, Device SDK, Encryption
+
+KidsCare Management
+Complete daycare solution with parent-teacher communication and tracking.
+Tech: React Native, Firebase, Push Notifications
+
+TradeSignals Pro
+Real-time stock market analysis with technical indicators and alerts.
+Tech: Kotlin, MPAndroidChart, WebSocket, ML Kit
+
+CoachPro - Drill Analyzer
+Sports training app with video analysis and performance tracking.
+Tech: Kotlin, ML Vision, CameraX, ExoPlayer
+
+CERTIFICATIONS
+• Google Associate Android Developer (2021)
+• Kotlin for Android Developers - JetBrains (2020)
+• AWS Certified Developer (2022)
+• React Native Specialization - Meta (2021)
+
+ACHIEVEMENTS
+• 50+ Projects Delivered
+• 100K+ Active Users
+• 99.9% Uptime Rate
+• Multiple App Store Featured Apps
+            `;
+
+            // Create and download text file
+            const blob = new Blob([resumeContent], { type: 'text/plain' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'Md_Injamamul_Hoque_Resume.txt';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+
+            // Show notification
+            alert('📥 Resume downloaded successfully!');
+        }
+
+        // Add swipe gesture support for modals (optional enhancement)
+        let touchStartY = 0;
+        let touchEndY = 0;
+
+        document.querySelectorAll('.modal-screen').forEach(modal => {
+            modal.addEventListener('touchstart', e => {
+                touchStartY = e.changedTouches[0].screenY;
+            }, false);
+
+            modal.addEventListener('touchend', e => {
+                touchEndY = e.changedTouches[0].screenY;
+                handleSwipe(modal);
+            }, false);
+        });
+
+        function handleSwipe(modal) {
+            if (touchEndY - touchStartY > 100) {
+                modal.classList.remove('active');
+            }
+        }
+    </script>
+</body>
+</html>
